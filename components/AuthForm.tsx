@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from 'next/image'
 import Link from 'next/link'
+import { createAccount } from '@/lib/actions/user.actions'
 
 declare type AuthFormProps = {
   type: 'signin' | 'signup'
@@ -29,6 +30,7 @@ const AuthForm = ({type} : AuthFormProps) => {
 
   const [loading, setLoading] = useState(false)
   const formSchema = authFormSchema({type})
+  const [accountId, setAccountId] = useState('')
 
     // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -40,13 +42,21 @@ const AuthForm = ({type} : AuthFormProps) => {
   })
  
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true)
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
-
-    setLoading(false)
+   
+    try {
+      const user = await createAccount({
+        fullName: values?.fullName || '',
+        email: values.email
+      })
+  
+      setAccountId(user.accountId)
+    } catch (error) {
+      console.log("failed to create acc", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
