@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import Image from 'next/image'
 import Link from 'next/link'
 import { createAccount } from '@/lib/actions/user.actions'
+import OtpModal from './otpModal'
 
 declare type AuthFormProps = {
   type: 'signin' | 'signup'
@@ -30,7 +31,7 @@ const AuthForm = ({type} : AuthFormProps) => {
 
   const [loading, setLoading] = useState(false)
   const formSchema = authFormSchema({type})
-  const [accountId, setAccountId] = useState('')
+  const [accountId, setAccountId] = useState(null)
 
     // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -60,6 +61,7 @@ const AuthForm = ({type} : AuthFormProps) => {
   }
 
   return (
+    <>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex max-h-[800px] w-full max-w-[580px] flex-col justify-center space-y-6 transition-all lg:h-full lg:space-y-8">
         <h1 className='form-title'>
@@ -124,6 +126,13 @@ const AuthForm = ({type} : AuthFormProps) => {
         </div>
       </form>
     </Form>
+          {accountId ? (
+          <OtpModal accountId={accountId} email={form.getValues('email')} />
+          ) : (
+            <></>
+          )}
+
+    </>
   )
 }
 
