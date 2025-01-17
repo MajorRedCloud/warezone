@@ -1,10 +1,11 @@
 "use server";
 
 import { ID, Query } from "node-appwrite";
-import { createAdminClient } from "../appwrite";
+import { createAdminClient, createClientSession } from "../appwrite";
 import { appwriteConfig } from "../appwrite/config";
 import { parseStringify } from "../utils";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const getUserByEmail = async (email: string) => {
     const {databases} = await createAdminClient()
@@ -52,7 +53,7 @@ export const createAccount = async ({fullName, email} : {fullName: string, email
         {
             fullName, 
             email,
-            avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2TgOv9CMmsUzYKCcLGWPvqcpUk6HXp2mnww&s',
+            avatar: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?semt=ais_hybrid',
             accountId: accountId
         }
     )
@@ -71,7 +72,7 @@ export const verifyOTP = async ({accountId, password} : {
         const session = await account.createSession(accountId, password);
         console.log(session);
 
-        (await cookies()).set('appwrite-session', session.$id, {
+        (await cookies()).set('appwrite-session', session.secret, {
             path: '/',
             httpOnly: true,
             sameSite: 'strict',
@@ -84,4 +85,52 @@ export const verifyOTP = async ({accountId, password} : {
         console.error(error)
     }
 
+}
+
+export const getCurrentUser = async () => {
+    const {databases, account} = await createClientSession()
+
+    const result  = await account.get()
+    const user = await databases.listDocuments(
+        appwriteConfig.database!,
+        appwriteConfig.usersCollection!,
+        [Query.equal('accountId', result.$id)]
+    )
+
+    if(user.total < 0){
+        return null
+    } else {
+        return parseStringify(user.documents[0])
+    }
+
+}
+
+export const logout = async () => {
+    const {account} = await createClientSession()
+
+    try {
+        await account.deleteSession('current');
+        (await cookies()).delete("appwrite-session")
+    } catch (error) {
+        console.log(error)
+    } finally {
+        redirect('/signin')
+    }
+}
+
+export const signInUser = async ({email} : {
+    email:string
+}) => {
+    try {
+        const exisitingUser = await getUserByEmail(email)
+
+        if(exisitingUser){
+            await sendEmailOTP(email)
+            return parseStringify({accountId: exisitingUser.accountId})
+        }
+
+        return parseStringify({accountId: null, error: "User not found"})
+    } catch (error) {
+        console.error(error)
+    }
 }

@@ -110,6 +110,10 @@
 }
 
 @layer utilities {
+  .remove-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
   /* ===== TYPOGRAPHY */
   .h1 {
     @apply text-[34px] leading-[42px] font-bold;
