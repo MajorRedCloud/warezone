@@ -15,11 +15,14 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/button'
 import { logout } from '@/lib/actions/user.actions'
+import FileUploader from './FileUploader'
 
 
-const MobileNav = ({fullName, email}: {
+const MobileNav = ({fullName, email, ownerId, accountId}: {
   fullName: string,
-  email: string
+  email: string,
+  ownerId: string,
+  accountId: string
 }) => {
 
   const [open, setOpen] = useState(false)
@@ -88,7 +91,10 @@ const MobileNav = ({fullName, email}: {
               </ul>
               <Separator className='bg-light-200/20 my-5'/>
               <div className='flex flex-col justify-between pb-5 gap-5'>
-                    FileUploader
+                    <FileUploader 
+                      ownerId={ownerId}
+                      accountId={accountId}
+                    />
                     <Button type='submit' className='sign-out-button' onClick={logout}>
                       <Image 
                           src={'/assets/icons/logout.svg'}

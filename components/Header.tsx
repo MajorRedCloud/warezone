@@ -5,12 +5,18 @@ import Search from './Search'
 import FileUploader from './FileUploader'
 import { logout } from '@/lib/actions/user.actions'
 
-const Header = () => {
+const Header = ({userId, accountId} :{
+    userId: string,
+    accountId: string
+}) => {
   return (
     <div className='hidden sm:flex flex-row w-full justify-between gap-5 items-center p-5 lg:py-5 xl:gap-10'>
         <Search />
         <div className='flex-center min-w-fit gap-4'>
-            <FileUploader />
+            <FileUploader 
+              ownerId={userId}
+              accountId={accountId}
+            />
                 <Button type='submit' className='sign-out-button' onClick={logout}>
                     <Image 
                         src={'/assets/icons/logout.svg'}
