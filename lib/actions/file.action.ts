@@ -172,3 +172,24 @@ export const removeFileWithUsers = async ({fileId, email, path} : removeFileWith
         console.error(error)
     }
 }
+
+export const deleteFile = async ({fileId,bucketFileId, path} : {fileId: string, path: string, bucketFileId:string}) => {
+    try {
+        const {databases, storage} = await createAdminClient()
+
+        const result = await databases.deleteDocument(
+            appwriteConfig.database!,
+            appwriteConfig.filesCollection!,
+            fileId
+        )
+
+        if (result) {
+            await storage.deleteFile(appwriteConfig.buckedId!, bucketFileId)
+        }
+
+        revalidatePath(path)
+        return parseStringify(result) 
+    } catch (error) {
+        console.error(error)
+    }
+}

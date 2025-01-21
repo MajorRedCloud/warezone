@@ -84,3 +84,10 @@ export const ShareInput = ({file, emails, onInputChange, onRemove} : {
   )
 }
 
+export const DeleteFile = ({file} : {file: Models.Document}) => {
+  return (
+    <p className='body-2 ml-2 text-light-100'>
+      Are you sure you want to permanently delete <span className='font-semibold'>{file.name}</span>?
+    </p>
+  )
+}

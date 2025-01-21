@@ -23,9 +23,9 @@ import {
   } from "@/components/ui/dialog"
 import { Input } from './ui/input'
 import { Button } from './ui/button'
-import { removeFileWithUsers, renameFile, shareFileWithUsers } from '@/lib/actions/file.action'
+import { deleteFile, removeFileWithUsers, renameFile, shareFileWithUsers } from '@/lib/actions/file.action'
 import { usePathname } from 'next/navigation'
-import { FileDetails } from './ActionsModalContent'
+import { DeleteFile, FileDetails } from './ActionsModalContent'
 import { ShareInput } from './ActionsModalContent'
   
   
@@ -55,7 +55,7 @@ const ActionDropdown = ({file} : {file: Models.Document}) => {
         const actions = {
             rename: () => renameFile({fileId: file.$id, name, extension: file.extension, path}),
             share: () => shareFileWithUsers({fileId: file.$id, emails, path}),
-            delete: () => console.log('delete'),
+            delete: () => deleteFile({fileId: file.$id, path, bucketFileId: file.bucketField})
         }
 
         success = await actions[action.value as keyof typeof actions]()
@@ -149,6 +149,9 @@ const ActionDropdown = ({file} : {file: Models.Document}) => {
                 )}
                 {action?.value === 'share' && (
                     <ShareInput file={file} emails={emails} onInputChange={setEmails} onRemove={(email) => handleremoveuser(email)} />
+                )}
+                {action?.value === 'delete' && (
+                    <DeleteFile file={file} />
                 )}
                 </DialogHeader>
                 {action?.value && ['rename', 'delete', 'share'].includes(action.value) && (
