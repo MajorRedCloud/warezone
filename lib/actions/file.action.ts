@@ -8,6 +8,7 @@ import { constructFileUrl, getFileType, parseStringify } from "../utils"
 import { revalidatePath } from "next/cache"
 import { getCurrentUser } from "./user.actions"
 
+
 declare type UploadFileProps = {
     file: File,
     ownerId: string,
@@ -88,6 +89,85 @@ export const getFiles = async () => {
     
         return parseStringify(response.documents)
 
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export const renameFile = async ({fileId, name, extension, path} : RenameFileProps) => {
+    const {databases} = await createAdminClient()
+
+    try {
+        const newName = `${name}.${extension}`
+        const updatedFile = await databases.updateDocument(
+            appwriteConfig.database!,
+            appwriteConfig.filesCollection!,
+            fileId,
+            {
+                name: newName
+            }
+        )
+
+        revalidatePath(path)
+        return parseStringify(updatedFile)  
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export const shareFileWithUsers = async ({fileId, emails, path} : UpdateFileUsersProps) => {
+    const {databases} = await createAdminClient()
+
+    try {
+        const file = await databases.getDocument(
+            appwriteConfig.database!,
+            appwriteConfig.filesCollection!,
+            fileId
+        )
+
+        const updatedUsers = [...file.users, ...emails]
+
+        const updatedFile = await databases.updateDocument(
+            appwriteConfig.database!,
+            appwriteConfig.filesCollection!,
+            fileId,
+            {
+            users: updatedUsers
+            }
+        )
+
+        revalidatePath(path)
+        return parseStringify(updatedFile)  
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export const removeFileWithUsers = async ({fileId, email, path} : removeFileWithUsersProps) => {
+    const {databases} = await createAdminClient()
+
+    try {
+        const file = await databases.getDocument(
+            appwriteConfig.database!,
+            appwriteConfig.filesCollection!,
+            fileId
+        )
+
+        let updatedUsers = [...file.users]
+        updatedUsers = updatedUsers.filter((e) => e != email)
+        console.log('updated users', updatedUsers)
+
+        const updatedFile = await databases.updateDocument(
+            appwriteConfig.database!,
+            appwriteConfig.filesCollection!,
+            fileId,
+            {
+            users: updatedUsers
+            }
+        )
+
+        revalidatePath(path)
+        return parseStringify(updatedFile)  
     } catch (error) {
         console.error(error)
     }

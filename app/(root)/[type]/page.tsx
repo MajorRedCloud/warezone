@@ -10,7 +10,6 @@ const page = async ({params}: SearchParamProps) => {
     const totalSize = '12GB'
 
     const files = await getFiles();
-    console.log('data:', files)
 
   return (
     <div className='mx-auto flex w-full max-w-7xl flex-col items-center gap-8'>

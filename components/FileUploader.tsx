@@ -36,7 +36,7 @@ const FileUploader = ({ownerId, accountId, classname} : FileUploaderProps) => {
     const uploadePromises = acceptedFiles.map(async (file) => {
       if(file.size > MAX_FILE_SIZE){
         setFiles((prevFile) => prevFile.filter((f) => f.name != file.name))
-        console.log("here")
+
         
         return toast({
           description: (
