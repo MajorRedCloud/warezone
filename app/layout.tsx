@@ -4,6 +4,8 @@ import React from 'react';
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 
+export const dynamic = 'force-dynamic'
+
 
 const poppins = Poppins({
   subsets: ["latin"],
