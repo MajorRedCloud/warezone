@@ -17,7 +17,7 @@ const FileCard = ({file} : {
                 extension={file.entension} 
                 url={file.url} 
                 classname='!size-20' 
-                imageClassName='!size-20'
+                imageClassName={`${file.type === 'image' ? 'size-20' : 'size-11'}`}
             />
 
             <div className='flex flex-col items-end justify-between'>

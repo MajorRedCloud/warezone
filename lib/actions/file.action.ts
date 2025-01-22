@@ -16,13 +16,29 @@ declare type UploadFileProps = {
     path: string
 }
 
-const createNewQueries = (currentUser : Models.Document) => {
+const createNewQueries = (currentUser : Models.Document, types: string[], searchText:string, sort:string, limit?:number) => {
     const queries = [
         Query.or([
             Query.equal('owner', currentUser.$id),
             Query.contains('users', currentUser.email)
         ])
     ]
+
+    if(types.length > 0) {
+        queries.push(Query.equal('type', types))
+    }
+
+    if(searchText) {
+        queries.push(Query.contains('name', searchText))
+    }
+
+    if(limit) {
+        queries.push(Query.limit(limit))
+    }
+
+    const [sortBy, orderBy] = sort.split('-')
+
+    queries.push(orderBy === 'asc' ? Query.orderAsc(sortBy) : Query.orderDesc(sortBy))
 
     return queries
 }
@@ -72,14 +88,14 @@ export const uploadFile = async ({file, ownerId, accountId, path} : UploadFilePr
     }
 }
 
-export const getFiles = async () => {
+export const getFiles = async ({types = [], searchText = '', sort = '$createdAt-desc', limit} : GetFilesProps) => {
     try {
         const {databases} = await createAdminClient()
         const currentUser = await getCurrentUser() 
     
         if(!currentUser) throw new Error('User not found')  
     
-        const queries = createNewQueries(currentUser)
+        const queries = createNewQueries(currentUser, types, searchText, sort, limit)
     
         const response = await databases.listDocuments(
             appwriteConfig.database!,

@@ -1,15 +1,22 @@
 import FileCard from '@/components/FileCard'
 import Sort from '@/components/Sort'
 import { getFiles } from '@/lib/actions/file.action'
+import { getFileTypesParams } from '@/lib/utils'
 import { Models } from 'node-appwrite'
 import React from 'react'
 
-const page = async ({params}: SearchParamProps) => {
+const page = async ({params, searchParams}: SearchParamProps) => {
 
     const type = (await params)?.type as string || ""
+    console.log(type)
     const totalSize = '12GB'
 
-    const files = await getFiles();
+    const searchText = (await searchParams)?.q as string || ''
+    const sort = ((await searchParams)?.s) as string || ''
+
+    const types = getFileTypesParams(type) as FileType[]
+
+    const files = await getFiles({types, searchText, sort});
 
   return (
     <div className='mx-auto flex w-full max-w-7xl flex-col items-center gap-8'>
