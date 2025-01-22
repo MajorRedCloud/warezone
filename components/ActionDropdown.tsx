@@ -92,7 +92,7 @@ const ActionDropdown = ({file} : {file: Models.Document}) => {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {actionsDropdownItems.map((item) => (
-                    <>
+                    
                     <DropdownMenuItem 
                         key={item.value} 
                         className='cursor-pointer'
@@ -126,7 +126,7 @@ const ActionDropdown = ({file} : {file: Models.Document}) => {
                             {item.label}
                         </div>}
                     </DropdownMenuItem>
-                    </>
+                    
                 ))}
             </DropdownMenuContent>
         </DropdownMenu>

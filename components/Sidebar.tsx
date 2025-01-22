@@ -15,8 +15,8 @@ const Sidebar = ({fullName, email}: {
     const pathname = usePathname()
 
   return (
-    <aside className='remove-scrollbar hidden h-screen w-[90px] flex-col oPverflow-auto px-5 py-7 pb-4 sm:flex lg:w-[280px] xl:w-[325px]'>
-        <Link href='/'>
+    <div className='remove-scrollbar hidden h-screen w-[90px] flex-col oPverflow-auto px-5 py-7 pb-4 sm:flex lg:w-[280px] xl:w-[325px]'>
+        <div>
             <Image 
                 src={'/assets/icons/logo-full-brand.svg'}
                 alt='Logo'
@@ -32,7 +32,7 @@ const Sidebar = ({fullName, email}: {
                 className='lg:hidden'
             />
 
-            <nav className='h5 mt-9 flex flex-1 gap-1 text-brand'>
+            <div className='h5 mt-9 flex flex-1 gap-1 text-brand'>
                 <ul className='flex flex-col gap-4 flex-1'>
                     {navItems.map((item) => 
                         (
@@ -51,7 +51,7 @@ const Sidebar = ({fullName, email}: {
                         )
                     )}
                 </ul>
-            </nav>
+            </div>
 
             <Image 
                 src={'/assets/images/files-2.png'}
@@ -78,8 +78,8 @@ const Sidebar = ({fullName, email}: {
                 </div>
             </div>
 
-        </Link>
-    </aside>
+        </div>
+    </div>
   )
 }
 
